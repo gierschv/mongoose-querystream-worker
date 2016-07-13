@@ -45,7 +45,7 @@ describe('query stream worker:', function(){
       , P = db.model('PersonForStream', collection)
       , i = 0
 
-    return P.find().stream().work(function(doc) {
+    return P.find().cursor().work(function(doc) {
       i++
     }, {promises : true}).then(function() {
       assert.equal(i, names.length);
@@ -58,7 +58,7 @@ describe('query stream worker:', function(){
       , P = db.model('PersonForStream', collection)
       , i = 0
 
-    var stream = P.find().stream().work(
+    var stream = P.find().cursor().work(
       function(doc, done) {
         i++;
         done();
@@ -75,7 +75,7 @@ describe('query stream worker:', function(){
       , P = db.model('PersonForStream', collection)
       , workers = []
       , docCount = 0
-      , concurrencyLimit = 2
+      , concurrencyLimit = 3
       , i = 0
 
     function worker (doc, done) {
@@ -86,7 +86,7 @@ describe('query stream worker:', function(){
       testDone();
     }
 
-    var stream = P.find().stream();
+    var stream = P.find().cursor();
     stream.concurrency(concurrencyLimit).work(worker, {}, testDone);
 
     function checkWorkers () {
